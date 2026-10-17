@@ -44,16 +44,16 @@ export const signup = async (req, res) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    const existingUser = await User.findOne({
-      email: normalizedEmail,
-    });
+    // const existingUser = await User.findOne({
+    //   email: normalizedEmail,
+    // });
 
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "Email is already registered",
-      });
-    }
+    // if (existingUser) {
+    //   return res.status(409).json({
+    //     success: false,
+    //     message: "Email is already registered",
+    //   });
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
