@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import connectDB from "../config/db.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -20,7 +21,7 @@ const createToken = (userId) => {
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
+    await connectDB();
     if (
       typeof name !== "string" ||
       typeof email !== "string" ||
@@ -44,16 +45,16 @@ export const signup = async (req, res) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    // const existingUser = await User.findOne({
-    //   email: normalizedEmail,
-    // });
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
 
-    // if (existingUser) {
-    //   return res.status(409).json({
-    //     success: false,
-    //     message: "Email is already registered",
-    //   });
-    // }
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Email is already registered",
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -97,7 +98,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    await connectDB();
     if (
       typeof email !== "string" ||
       typeof password !== "string" ||
@@ -154,7 +155,8 @@ export const login = async (req, res) => {
 };
 
 // LOGOUT
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
+  await connectDB();
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -171,6 +173,7 @@ export const logout = (req, res) => {
 // GET CURRENT USER
 export const getMe = async (req, res) => {
   try {
+    await connectDB();
     const user = await User.findById(req.user.id);
 
     if (!user) {

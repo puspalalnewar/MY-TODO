@@ -9,12 +9,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://pn-todo.vercel.app",
-  "https://pn-todo-git-main-yourname.vercel.app",
-  "https://my-todo-ui.vercel.app",
-];
+const allowedOrigins = ["http://localhost:5173"];
 
 app.use(
   cors({
